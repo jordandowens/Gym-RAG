@@ -1,0 +1,1 @@
+#Writes Embeddings to Vector Store
