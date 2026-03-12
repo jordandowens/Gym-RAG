@@ -29,7 +29,6 @@ services:
           devices:
             - capabilities: [gpu]
 
-
   chromadb:
     image: chromadb/chroma:latest
     container_name: chromadb
@@ -39,3 +38,20 @@ services:
       - ../data/chroma:/chroma/chroma
     environment:
       - IS_PERSISTENT=TRUE
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: gymrag
+      MYSQL_USER: gymuser
+      MYSQL_PASSWORD: gympass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../api/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ../data/mariadb:/var/lib/mysql
+
+

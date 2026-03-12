@@ -1,1 +1,2 @@
 backend/models/*.gguf
+backend/data

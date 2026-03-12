@@ -2,26 +2,26 @@
 -- Users
 -- ============================
 CREATE TABLE users (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    username        TEXT NOT NULL UNIQUE,
-    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================
 -- Workouts (single text field for full workout)
 -- ============================
 CREATE TABLE workouts (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id         INTEGER NOT NULL,
-    date            DATE NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    date DATE NOT NULL,
 
-    workout_text    TEXT NOT NULL,
+    workout_text TEXT NOT NULL,
 
-    energy_level    INTEGER,
-    notes           TEXT,
-    metadata        TEXT,
+    energy_level INT,
+    notes TEXT,
+    metadata TEXT,
 
-    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -29,32 +29,31 @@ CREATE TABLE workouts (
 -- Meals (single text field for description)
 -- ============================
 CREATE TABLE meals (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id         INTEGER NOT NULL,
-    date            DATE NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    date DATE NOT NULL,
 
-    name            TEXT NOT NULL,
-    description     TEXT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
 
-    calories        INTEGER,
-    protein         INTEGER,
-    carbs           INTEGER,
-    fat             INTEGER,
+    calories INT,
+    protein INT,
+    carbs INT,
+    fat INT,
 
-    notes           TEXT,
-    metadata        TEXT,
+    notes TEXT,
+    metadata TEXT,
 
-    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- ============================
--- Embedding Index (optional helper)
--- Tracks what has been embedded for ChromaDB
+-- Embedding Index
 -- ============================
 CREATE TABLE embedding_index (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    source_type     TEXT NOT NULL,
-    source_id       INTEGER NOT NULL,
-    last_embedded   DATETIME DEFAULT CURRENT_TIMESTAMP
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    source_type VARCHAR(255) NOT NULL,
+    source_id INT NOT NULL,
+    last_embedded DATETIME DEFAULT CURRENT_TIMESTAMP
 );
