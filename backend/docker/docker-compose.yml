@@ -35,9 +35,11 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../data/chroma:/chroma/chroma
+      - ../data/chroma:/data
+      - ../data/chroma/config.yaml:/config.yaml
     environment:
       - IS_PERSISTENT=TRUE
+
 
   mariadb:
     image: mariadb:10.6

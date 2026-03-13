@@ -2,3 +2,5 @@ fastapi
 uvicorn
 mariadb
 chromadb
+sentence-transformers
+numpy

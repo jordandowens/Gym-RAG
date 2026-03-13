@@ -2,3 +2,6 @@ backend/models/*.gguf
 backend/data
 backend/api/*/__pycache__
 backend/api/__pycache__
+backend/api/services/rag/__pycache__
+backend/scripts/__pycache__
+backend/scripts/.env
