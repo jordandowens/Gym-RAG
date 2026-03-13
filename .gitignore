@@ -5,3 +5,4 @@ backend/api/__pycache__
 backend/api/services/rag/__pycache__
 backend/scripts/__pycache__
 backend/scripts/.env
+backend/scripts/data
