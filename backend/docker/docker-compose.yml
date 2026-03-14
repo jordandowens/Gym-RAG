@@ -35,7 +35,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../data/chroma:/data
+      - ../data/chroma:/chroma
       - ../data/chroma/config.yaml:/config.yaml
     environment:
       - IS_PERSISTENT=TRUE
@@ -69,3 +69,10 @@ services:
       - chromadb
       - llama
 
+  frontend:
+    build: ../../frontend
+    container_name: gymrag-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api

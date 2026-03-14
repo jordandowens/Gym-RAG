@@ -7,16 +7,16 @@ import json
 
 router = APIRouter()
 
-@router.post("/nutrition", response_model=NutritionRead)
+@router.post("/", response_model=NutritionRead)
 def create_nutrition(entry: NutritionCreate):
-    #Insert into MariaDB
+    # Insert into MariaDB
     try:
         conn = get_connection()
         cur = conn.cursor()
 
         cur.execute(
             """
-            INSERT INTO nutrition (
+            INSERT INTO meals (
                 user_id, date, name, description,
                 calories, protein, carbs, fat,
                 notes, metadata
@@ -40,7 +40,7 @@ def create_nutrition(entry: NutritionCreate):
 
         nutrition_id = cur.lastrowid
 
-        cur.execute("SELECT created_at FROM nutrition WHERE id = %s", (nutrition_id,))
+        cur.execute("SELECT created_at FROM meals WHERE id = %s", (nutrition_id,))
         created_at = cur.fetchone()[0]
 
     except Exception as e:
@@ -50,10 +50,11 @@ def create_nutrition(entry: NutritionCreate):
         cur.close()
         conn.close()
 
-    #Insert into ChromaDB
+    # Insert into ChromaDB
     try:
         vector_id = f"nutrition-{nutrition_id}"
 
+        # Build a rich document for embeddings
         document = (
             f"Meal on {entry.date}: {entry.name}\n"
             f"Description: {entry.description}\n\n"
@@ -63,21 +64,31 @@ def create_nutrition(entry: NutritionCreate):
             f"Metadata: {entry.metadata}"
         )
 
+        # Clean metadata for Chroma (no None values)
+        meta = {
+            "nutrition_id": nutrition_id,
+            "user_id": entry.user_id,
+            "date": str(entry.date),
+            "calories": entry.calories,
+            "meal_type": entry.metadata.get("meal_type"),
+            "phase": entry.metadata.get("phase"),
+            "quality": entry.metadata.get("quality"),
+            "day_of_week": entry.metadata.get("day_of_week")
+        }
+
+        # Remove None values
+        meta = {k: v for k, v in meta.items() if v is not None}
+
         collection.add(
             ids=[vector_id],
             documents=[document],
-            metadatas=[{
-                "nutrition_id": nutrition_id,
-                "user_id": entry.user_id,
-                "date": str(entry.date),
-                "calories": entry.calories
-            }]
+            metadatas=[meta]
         )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vectorstore error: {e}")
 
-    #Return NutritionRead
+    # Return NutritionRead
     return NutritionRead(
         id=nutrition_id,
         user_id=entry.user_id,

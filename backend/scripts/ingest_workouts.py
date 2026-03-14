@@ -29,7 +29,7 @@ chroma = chromadb.HttpClient(
     settings=Settings(allow_reset=False)
 )
 
-collection = chroma.get_or_create_collection("workouts")
+collection = chroma.get_or_create_collection("user_data")
 
 # -----------------------------
 # Load JSON
@@ -69,16 +69,30 @@ for w in workouts:
 
     workout_id = cursor.lastrowid
 
-    vector = embed(w["workout_text"])
+    # Build rich workout document
+    document = (
+        f"Workout on {w['date']}:\n"
+        f"{w['workout_text']}\n\n"
+        f"Energy Level: {w.get('energy_level')}\n"
+        f"Notes: {w.get('notes')}\n"
+        f"Metadata: {w.get('metadata')}"
+    )
+
+    vector = embed(document)
 
     collection.add(
         ids=[f"workout-{workout_id}"],
-        documents=[w["workout_text"]],
+        documents=[document],
         embeddings=[vector],
         metadatas=[{
             "source_type": "workout",
             "source_id": workout_id,
-            "user_id": user_id
+            "user_id": user_id,
+            "phase": w["metadata"]["phase"],
+            "quality": w["metadata"]["quality"],
+            "is_rest_day": w["metadata"]["is_rest_day"],
+            "focus": w["metadata"]["focus"],
+            "movements": json.dumps(w["metadata"]["movements"])  # <-- FIX
         }]
     )
 

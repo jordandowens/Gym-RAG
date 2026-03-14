@@ -29,7 +29,7 @@ chroma = chromadb.HttpClient(
     settings=Settings(allow_reset=False)
 )
 
-collection = chroma.get_or_create_collection("meals")
+collection = chroma.get_or_create_collection("user_data")
 
 # -----------------------------
 # Load JSON
@@ -73,18 +73,30 @@ for m in meals:
 
     meal_id = cursor.lastrowid
 
-    # Build text for embedding
-    text_for_embedding = f"{m['name']}. {m.get('description', '')}"
-    vector = embed(text_for_embedding)
+    # Build rich document text (matches FastAPI ingestion)
+    document = (
+        f"Meal on {m['date']}: {m['name']}\n"
+        f"Description: {m.get('description', '')}\n\n"
+        f"Calories: {m.get('calories')}, Protein: {m.get('protein')}, "
+        f"Carbs: {m.get('carbs')}, Fat: {m.get('fat')}\n"
+        f"Notes: {m.get('notes')}\n"
+        f"Metadata: {m.get('metadata')}"
+    )
+
+    vector = embed(document)
 
     collection.add(
         ids=[f"meal-{meal_id}"],
-        documents=[text_for_embedding],
+        documents=[document],
         embeddings=[vector],
         metadatas=[{
             "source_type": "meal",
             "source_id": meal_id,
-            "user_id": user_id
+            "user_id": user_id,
+            "date": m["date"],
+            "meal_type": m["metadata"]["meal_type"],
+            "quality": m["metadata"]["quality"],
+            "phase": m["metadata"]["phase"]
         }]
     )
 

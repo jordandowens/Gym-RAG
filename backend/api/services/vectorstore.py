@@ -4,6 +4,6 @@ import chromadb
 client = chromadb.HttpClient(host="chromadb", port=8000)
 
 collection = client.get_or_create_collection(
-    name="workouts",
+    name="user_data",
     metadata={"hnsw:space": "cosine"}
 )

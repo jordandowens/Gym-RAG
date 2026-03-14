@@ -7,9 +7,9 @@ import json
 
 router = APIRouter()
 
-@router.post("/workouts", response_model=WorkoutRead)
+@router.post("/", response_model=WorkoutRead)
 def create_workout(workout: WorkoutCreate):
-    #Insert into MariaDB
+    # Insert into MariaDB
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -42,11 +42,11 @@ def create_workout(workout: WorkoutCreate):
         cur.close()
         conn.close()
 
-    #Insert into ChromaDB
+    # Insert into ChromaDB
     try:
         vector_id = f"workout-{workout_id}"
 
-        #Build a rich document for embeddings
+        # Build a rich document for embeddings
         document = (
             f"Workout on {workout.date}:\n"
             f"{workout.workout_text}\n\n"
@@ -55,21 +55,36 @@ def create_workout(workout: WorkoutCreate):
             f"Metadata: {workout.metadata}"
         )
 
+        # Clean metadata for Chroma
+        raw_movements = workout.metadata.get("movements")
+
+        meta = {
+            "workout_id": workout_id,
+            "user_id": workout.user_id,
+            "date": str(workout.date),
+            "energy_level": workout.energy_level,
+            "phase": workout.metadata.get("phase"),
+            "day_of_week": workout.metadata.get("day_of_week"),
+            "is_rest_day": workout.metadata.get("is_rest_day"),
+            "quality": workout.metadata.get("quality"),
+            "focus": workout.metadata.get("focus"),
+            "movements": json.dumps(raw_movements) if raw_movements else None
+        }
+
+
+        # Remove None values
+        meta = {k: v for k, v in meta.items() if v is not None}
+
         collection.add(
             ids=[vector_id],
             documents=[document],
-            metadatas=[{
-                "workout_id": workout_id,
-                "user_id": workout.user_id,
-                "date": str(workout.date),
-                "energy_level": workout.energy_level
-            }]
+            metadatas=[meta]
         )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vectorstore error: {e}")
 
-    #Return WorkoutRead model
+    # Return WorkoutRead model
     return WorkoutRead(
         id=workout_id,
         user_id=workout.user_id,

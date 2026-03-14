@@ -1,16 +1,145 @@
+/* Global dark mode */
 body {
-  margin: 0;
-  padding: 0;
-  background: #111;
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: Inter, sans-serif;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Main panel */
+.main-panel {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Sidebar */
+.chat-sidebar {
+  width: 380px;
+  background: #161b22;
+  border-left: 1px solid #30363d;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Titles */
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards */
+.form-card {
+  background: #161b22;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #30363d;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
+.form-body input,
+.form-body textarea,
+.chat-input,
+.chat-user-input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 0.8rem;
+  border-radius: 8px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+}
+
+/* Buttons */
+.submit-btn,
+.chat-send-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: #238636;
   color: white;
-  font-family: Arial, sans-serif;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:hover,
+.chat-send-btn:hover {
+  background: #2ea043;
+}
+
+/* Chat bubbles */
+.chat-response {
+  background: #0d1117;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  margin-top: 1rem;
+  white-space: pre-wrap;
+}
+
+
+.chat-locked-overlay.active {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
 }
 
 .chat-container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #1a1a1a;
-  border-radius: 12px;
-  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem;
+  gap: 1rem;
 }
+
+.chat-locked {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* Dark mode inputs everywhere */
+input,
+textarea,
+select {
+  background: #0d1117 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #30363d !important;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
+}
+
+.main-panel {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.forms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
