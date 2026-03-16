@@ -7,7 +7,9 @@ def generate(prompt: str):
     payload = {
         "prompt": prompt,
         "max_tokens": 512,
-        "temperature": 0.2
+        "temperature": 0.2,
+        "repeat_penalty": 1.2,
+        "stop": ["The final answer is", "Note:", "###", "*", "I am a large language model"]
     }
 
     response = requests.post(LLAMA_URL, json=payload)

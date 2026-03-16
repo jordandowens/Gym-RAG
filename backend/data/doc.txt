@@ -1,5 +1,0 @@
-Each of these directories are volume mounts for:
-
-sqldb -> SQL Database (MariaDB)
-vectorstore -> Chroma/FAISS
-llama -> Model Files for LLaMA
